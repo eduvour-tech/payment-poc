@@ -1,0 +1,55 @@
+<!-- templates/pay.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Test</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    <h2>Pay ₹<span id="amount">500</span></h2>
+    <button id="pay-button">Pay Now</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        const csrftoken = document.querySelector('[name=csrf-token]').content;
+        document.getElementById("pay-button").onclick = async function () {
+            const response = await fetch("/api/create-order/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken},
+                body: JSON.stringify({ amount: 500 })
+            });
+            
+
+            const data = await response.json();
+
+            const options = {
+                key: data.razorpay_key,
+                amount: data.amount * 100,
+                currency: "INR",
+                order_id: data.order_id,
+                handler: async function (response) {
+                    // Send to backend for verification
+                    const verifyResponse = await fetch("/api/verify-payment/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" ,
+                        "X-CSRFToken": csrftoken},
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    });
+
+                    const verifyData = await verifyResponse.json();
+                    alert(verifyData.message || "Payment failed");
+                },
+                theme: { color: "#3399cc" }
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+</html>

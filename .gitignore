@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# Virtualenv
+env/
+venv/
+ENV/
+.venv/
+.env/
+*.env
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# PyCharm
+.idea/
+
+# Test/coverage
+.coverage
+htmlcov/
+.tox/
+.nox/
+*.cover
+coverage.xml
+
+# Migrations (optional, if you don't want to track them)
+# **/migrations/
+
+# dotenv
+.env
+.env.*
+
+# Node (if using npm/yarn for frontend)
+node_modules/
